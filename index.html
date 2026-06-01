@@ -1,0 +1,407 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;1,400&display=swap');
+
+  .lp-root {
+    font-family: 'Syne', sans-serif;
+    background: #0a0a0a;
+    color: #f0ede6;
+    min-height: 100vh;
+    padding: 0;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .lp-noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  .lp-glow {
+    position: fixed;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(100,220,140,0.12) 0%, transparent 70%);
+    top: -200px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .lp-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 3rem 2rem 4rem;
+  }
+
+  .lp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(100,220,140,0.1);
+    border: 0.5px solid rgba(100,220,140,0.35);
+    border-radius: 100px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: #64dc8c;
+    letter-spacing: 0.04em;
+    margin-bottom: 2rem;
+  }
+
+  .lp-badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #64dc8c;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .lp-h1 {
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0 0 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .lp-h1 .accent {
+    color: #64dc8c;
+    font-style: italic;
+  }
+
+  .lp-sub {
+    font-size: 1.05rem;
+    color: #a09d96;
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 0 2.5rem;
+    font-weight: 400;
+  }
+
+  .lp-sub code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9em;
+    background: rgba(100,220,140,0.08);
+    border: 0.5px solid rgba(100,220,140,0.2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: #64dc8c;
+  }
+
+  .lp-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+  }
+
+  .lp-input {
+    flex: 1;
+    min-width: 220px;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 15px;
+    color: #f0ede6;
+    font-family: 'Syne', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .lp-input::placeholder { color: #5a5752; }
+  .lp-input:focus { border-color: #64dc8c; }
+
+  .lp-btn {
+    background: #64dc8c;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: transform 0.15s, background 0.15s;
+    letter-spacing: -0.01em;
+  }
+
+  .lp-btn:hover { background: #7ae89e; transform: translateY(-1px); }
+  .lp-btn:active { transform: scale(0.98) translateY(0); }
+
+  .lp-hint {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: #504d49;
+    margin-bottom: 3.5rem;
+  }
+
+  .lp-success {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: rgba(100,220,140,0.08);
+    border: 0.5px solid rgba(100,220,140,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #64dc8c;
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 3.5rem;
+  }
+
+  .lp-divider {
+    border: none;
+    border-top: 0.5px solid rgba(255,255,255,0.07);
+    margin: 0 0 2.5rem;
+  }
+
+  .lp-problems-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    color: #504d49;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  .lp-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 3rem;
+  }
+
+  .lp-card {
+    background: rgba(255,255,255,0.03);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .lp-card:hover { border-color: rgba(100,220,140,0.25); }
+
+  .lp-card-icon {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #64dc8c;
+  }
+
+  .lp-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 0 5px;
+    color: #f0ede6;
+    line-height: 1.3;
+  }
+
+  .lp-card-body {
+    font-size: 12px;
+    color: #6b6864;
+    line-height: 1.55;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .lp-how-label {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    color: #504d49;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+
+  .lp-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  .lp-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    position: relative;
+  }
+
+  .lp-step-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .lp-step-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(100,220,140,0.1);
+    border: 0.5px solid rgba(100,220,140,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: #64dc8c;
+    flex-shrink: 0;
+  }
+
+  .lp-step-line {
+    width: 0.5px;
+    flex: 1;
+    min-height: 28px;
+    background: rgba(255,255,255,0.07);
+    margin: 4px 0;
+  }
+
+  .lp-step-content {
+    padding-bottom: 1.75rem;
+  }
+
+  .lp-step-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 4px 0 4px;
+    color: #f0ede6;
+  }
+
+  .lp-step-desc {
+    font-size: 12px;
+    color: #6b6864;
+    line-height: 1.55;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .lp-footer {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: #3a3835;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid rgba(255,255,255,0.05);
+  }
+</style>
+
+<div class="lp-root">
+  <div class="lp-noise"></div>
+  <div class="lp-glow"></div>
+  <div class="lp-inner">
+
+    <div class="lp-badge">
+      <div class="lp-badge-dot"></div>
+      Early access · Limited spots
+    </div>
+
+    <h1 class="lp-h1">
+      Your AI wrote it.<br>
+      <span class="accent">We fix it.</span>
+    </h1>
+
+    <p class="lp-sub">
+      Stop re-prompting and hoping. Paste your broken code + error, and get a plain-English
+      <code>root cause</code>, the exact fix, and how to prevent it next time —
+      even if you don't understand the code.
+    </p>
+
+    <div class="lp-form" id="lp-form">
+      <input class="lp-input" id="lp-email" type="email" placeholder="your@email.com" autocomplete="email" />
+      <button class="lp-btn" onclick="handleJoin()">Join waitlist →</button>
+    </div>
+
+    <div class="lp-success" id="lp-success">
+      <i class="ti ti-circle-check" style="font-size:18px"></i>
+      You're on the list — we'll be in touch soon.
+    </div>
+
+    <p class="lp-hint" id="lp-hint">No spam. No credit card. Just early access.</p>
+
+    <hr class="lp-divider" />
+
+    <p class="lp-problems-label">Sound familiar?</p>
+
+    <div class="lp-cards">
+      <div class="lp-card">
+        <div class="lp-card-icon"><i class="ti ti-bug" aria-hidden="true"></i></div>
+        <p class="lp-card-title">AI breaks its own code</p>
+        <p class="lp-card-body">Works on first try, fails after one edit. You don't know why.</p>
+      </div>
+      <div class="lp-card">
+        <div class="lp-card-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
+        <p class="lp-card-title">Re-prompting loop</p>
+        <p class="lp-card-body">Copy error → paste to AI → try again → same result.</p>
+      </div>
+      <div class="lp-card">
+        <div class="lp-card-icon"><i class="ti ti-eye-off" aria-hidden="true"></i></div>
+        <p class="lp-card-title">No idea what's wrong</p>
+        <p class="lp-card-body">Stack traces are gibberish. You just want your app to work.</p>
+      </div>
+    </div>
+
+    <hr class="lp-divider" />
+
+    <p class="lp-how-label">How it works</p>
+
+    <div class="lp-steps">
+      <div class="lp-step">
+        <div class="lp-step-left">
+          <div class="lp-step-num">01</div>
+          <div class="lp-step-line"></div>
+        </div>
+        <div class="lp-step-content">
+          <p class="lp-step-title">Paste your broken code + error</p>
+          <p class="lp-step-desc">Works with Cursor, Bolt, Lovable, v0 — any AI-generated output.</p>
+        </div>
+      </div>
+      <div class="lp-step">
+        <div class="lp-step-left">
+          <div class="lp-step-num">02</div>
+          <div class="lp-step-line"></div>
+        </div>
+        <div class="lp-step-content">
+          <p class="lp-step-title">Get a plain-English diagnosis</p>
+          <p class="lp-step-desc">Root cause explained like you're 5. No jargon, no condescension.</p>
+        </div>
+      </div>
+      <div class="lp-step">
+        <div class="lp-step-left">
+          <div class="lp-step-num">03</div>
+          <div class="lp-step-line"></div>
+        </div>
+        <div class="lp-step-content">
+          <p class="lp-step-title">Copy the fix + learn the pattern</p>
+          <p class="lp-step-desc">Exact code to paste, plus a tip so this won't happen again.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="lp-footer">© 2026 · Built for vibe coders everywhere</p>
+
+  </div>
+</div>
+
+<script>
+function handleJoin() {
+  const email = document.getElementById('lp-email').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('lp-email').style.borderColor = '#e24b4a';
+    document.getElementById('lp-email').focus();
+    setTimeout(() => { document.getElementById('lp-email').style.borderColor = ''; }, 2000);
+    return;
+  }
+  document.getElementById('lp-form').style.display = 'none';
+  document.getElementById('lp-hint').style.display = 'none';
+  const s = document.getElementById('lp-success');
+  s.style.display = 'flex';
+}
+</script>
